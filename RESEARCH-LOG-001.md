@@ -348,3 +348,60 @@ F1（R2 审核，2026-11-04）：更正 E1 依据栏的架构名。
 
 ---
 *结束。来源摘录见 ./sources/R1-*.md 及 R1b-*.md。本日志无 A 级（本机复现）结论。*
+
+---
+
+## 十四、修订记录 r-grade（R4 审核，2026-11-08 JST）
+
+> 抽查范围：本日志中所有标 **B** 且承载"实测/数字"的条目。判据（R4 任务 F3）：**只有单源博客 / 单用户 issue、无第三方复现记录的实测数字 → 降为 C**；**机制、已合并 PR、官方文档语义、官方产物（模型卡/文件清单/命令）可保留 B（机制）或 B（文档）**。
+> 方式：**追加式修订，不重写全文**。正文各条的「证据等级：B」字样为历史标注，**凡与本表冲突，以本表为准**；本表即"降为 C"的正式生效记录。数字本身未改动、未删除、未新增，仅调整等级。
+> 交叉引用：RESEARCH-LOG-004（R4）引用本日志 Turbo/cache 条目时，一律按本表修正后的等级（R1-12 / R1-20 / R1-21 / R1-27 均为 **C**）。
+
+### r-grade.1 降级表（原级 → 新级｜理由）
+
+| 条目 | 名称 | 原级 → 新级 | 理由（单源 / 无第三方复现） |
+|---|---|---|---|
+| R1-01 | ComfyUI DynamicVRAM（Blackwell 笔记本） | **B → C** | 数字全部出自 zenn cosara **单作者单机器**（908.1s、209→124 帧、机崩 8→0、248.6 vs 248.7s）；无第三方复现。机制描述（32MB 页错误粒度流式搬入）保留为 B（机制），但"实测数字"降 C。 |
+| R1-02 | comfy-kitchen 2-stream 异步卸载 | **B → C** | 出自 qiita 3070Ti **单作者**（92.34/96.85/89.56s）；且原文已注明 Ampere 非 Blackwell。调度机制 B（机制），数字 C。 |
+| R1-06 | int8 ConvRot（8GB 实测） | **B → C** | 345.2s / 7,322MiB / 1.56× 等数字来自 qiita 3070 **单作者**；Comfy-Org 文件清单仅证明"文件存在"（B 文档），不构成速度复现。 |
+| R1-07 | NVFP4（Blackwell 原生） | **B（实测数字）→ C**；**B（文档/机制）保留** | 11.66GB / 800×448 跑通 15s 出自 cosara **单作者**；"NVFP4 需 CC≥10.0、sm_120=12.0"来自 SGLang 官方配方语义 → **保留 B（文档）**。 |
+| R1-08 | W4A8 mixed（8GB 实测） | **B → C** | 79.74/89.56s、3.41×、1001.2s 等来自两篇 qiita **单作者博客**（不同硬件/配置，非同一数字的第三方复现）。 |
+| R1-12 | Turbo LoRA（8GB 多卡实测） | **B → C** | 20→8 步 1.7×、8 步手臂融化、4 步 3.41×、ckpt850 环状伪影均出自 qiita 3070 / 3070Ti **两篇单作者博客**，无独立第三方复现；LightX2V 仓库仅证明"支持"（B 文档）。**LOG-004 引用编号时按 C 处理**。 |
+| R1-17 | SDPA 实测基准 | **B（实测数字）→ C**；**B（机制）保留** | "两文均全程 SDPA"及各分辨率耗时出自 R1-01/R1-04 两篇单作者博客；SDPA 是 ComfyUI 默认参考实现 → **保留 B（机制）**。 |
+| R1-18 | SageAttention（H3 噪声 / 加速） | **B（噪声与加速实测）→ C**；**B（机制/仓库）保留** | 4096tok 2.432×、端到端 14%、#15263 "0.31.1 起可用"均为**单作者实测 / 单一 issue 报告**，且 #15263 本轮 R4 直读确认仍 open、作者自述 "not calling it fixed yet"；SageAttention 官方仓库与论文（方法本身）→ **保留 B（机制）**。 |
+| R1-19 | 稀疏注意力 VSA/SLA 在 H3 上 OOM | **B → C** | 出自 ComfyUI #16175 **单用户 issue**（3090 Ti 24GB），无第三方复现；稀疏近似机制为 B（机制）。 |
+| R1-20 | FirstBlockCache（20 步 271.84→211.52s；4/6/8-step Turbo 关 cache） | **B → C** | 全部数字与"低步数关闭 cache"结论出自 qiita 3070Ti **单作者**。**这是 LOG-004 冲突矩阵的关键条目，按 C 引用**；R4 已用 ≥2 条独立来源（comfy.icu WanVideoEasyCache、FFFFFFpy AdaptiveCache、note JUNI）重新检验该结论，见 RESEARCH-LOG-004。 |
+| R1-21 | Spectrum 跳步（cosara 跑通 + 3.53×） | **B（cosara 跑通）→ C**；3.53× 原已为 C | "cosara 在 Blackwell 8GB 笔记本跑通 v0.2.3"出自**单作者**；3.53× 来自 SGLang 且本就标 C，不升格。R4 已用 comfyui-wiki / minimax3.org / 上游 README 补直读证据（见 LOG-004）。 |
+| R1-23 | CUDA 系统内存回退导致整机崩溃 | **B → C** | 8 次 HYPERVISOR_ERROR、0 次、209→124 帧出自 cosara **单作者单机器**；VBS/DMA 保护机制说明保留 B（机制）。 |
+| R1-24 | pagefile 增长（cold/warm） | **B → C** | 9.74GiB / 2GiB / 0.02–0.15GiB 出自 qiita 3070Ti **单作者**；32GB RAM 卡死传闻原已标 D。 |
+| R1-25 | 笔记本供电 655.8→237.2s（2.76×） | **B → C** | 出自 cosara **单作者单机器**；`SW Power Cap = Active` 的 nvidia-smi 语义保留 B（机制）。 |
+| R1-26 | pinned memory / `--disable-pinned-memory` flags | **B → C** | 出自 ComfyUI #15663 **单用户 issue**（且为 4090 24GB + `--disable-dynamic-vram` 的特殊配置），根因 `comfy-aimdo` 初始化失败属 B（机制），但"flags 有效"的用户报告无第三方复现。 |
+| R1-27 | note JUNI：3060 Ti 8GB / 64GB RAM 实测 | **B → C** | 185.5s / 6,304MiB / 2113.2s / 7,677MiB / "EasyCache 对 turbo 无意义" 全部出自 **单作者 note 博文**；R4 已直读该页复核（见 `sources/R4-11-note-juni-easycache-turbo.md`，原 r-grade 误写为 R4-16，R4b 已更正），但仍无第三方复现 → 维持 C。 |
+| R1-29 | Tomiigo 模拟 8GB 上限 | 原已为 **C** → 维持 **C** | 模拟上限非实体 8GB 卡，原文已声明 "Timings will not transfer to a real 8GB card"；本表不改。 |
+
+### r-grade.2 保留 B 的条目（机制 / 文档 / 已合并 PR，符合 F3 例外）
+
+| 条目 | 保留等级 | 理由 |
+|---|---|---|
+| R1-03 | **B（机制）** | DiffSynth-Studio 官方 `VRAM_management.md` 文档语义；对 H3 仍为 C。 |
+| R1-05 | **B（机制）** | diffusers 官方 memory 文档（`enable_group_offloading`、2× 模型大小 CPU 内存）。 |
+| R1-09 | **B（文档）** | unsloth HF 模型卡真实存在、文件体积与 `sd-cli` 命令可核对；"效果数字缺失"原已标 D，维持。 |
+| R1-10 | **B（机制）** | DiffSynth 文档明确 "FP8 只减显存不提速（Native FP8 计算仅 Hopper）"；对 H3 为 C。 |
+| R1-11 | **B（变体存在+机制）/ C（8GB 可行性）** | 原已分级，维持；T4 Colab 14.56GiB 仅 288×160 成功，无真实 8GB 卡记录。 |
+| R1-13 | **B（支持真实）/ C（H3 具体倍数）** | LightX2V 仓库发布记录为官方产物；H3 加速倍数本就标 C，维持。 |
+| R1-15 | **B（已合并 PR）** | ComfyUI PR #15456 `handles_tiling` 修复已合并、附单测 11 passed / 全量 54 passed —— 符合 F3 "已合并 PR 可保留 B"。 |
+| R1-16 | **B（机制）** | diffusers VAE slicing/tiling 官方文档语义。 |
+| R1-18 | **B（机制，SageAttention 仓库/论文）** | 见降级表右栏；实测噪声/加速部分降 C。 |
+| R1-22 | **B（方法真实）/ C（H3 适用性）** | TeaCache 仓库（CVPR2025）方法真实；未直接列 H3，原已标 C，维持。 |
+| R1-04 / R1-14 / R1-28 | 原为 **C / C / D** | 本就不在"B 抽查"范围，不改。 |
+
+### r-grade.3 抽查结论
+
+- **共 16 条 B 级"实测/数字"条目降为 C**（含 2 条拆分为"机制/文档保留 B + 数字降 C"）；**10 类机制/文档/已合并 PR 条目保留 B**；3 条原非 B 的条目不改动。
+- **未发现需要 B→D 或 B→A 的条目**；本任务无 A 级。
+- 降级**不影响正文任何数字**，只影响其可外推强度：这些数字仍可作为"单源实机观察值"引用，但**不得写成"已复现/已验证"**，且在拼装 V1.1 速度栈时只按 C 计。
+- 与 RESEARCH-LOG-003 修订记录 r1 一致：单用户 issue（#15738）本轮同样按 C 处理，不因"直读到正文"而升 B。
+
+### r-grade.4 路径纠错（R4b，2026-11-09 JST）
+
+- R1-27 行内原引用 `sources/R4-16-note-juni-easycache-turbo.md` 为**不存在的文件**（R4 误写编号）；实际本轮 R4 摘录文件为 `sources/R4-11-note-juni-easycache-turbo.md`。**纠错：原路径 R4-16 → 正确路径 R4-11**（已同步修正 R1-27 行内引用，未改任何数字与正文结论）。
